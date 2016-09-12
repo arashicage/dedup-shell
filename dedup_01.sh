@@ -8,9 +8,13 @@ if [ $# -eq 0 ]; then
 fi
 
 IFS=$'\n'
-arr=($(redis-cli -p $1 -c scan 0 match 01:*))
+arr=($(redis-cli -p $1 -c scan 0 match 01:* count 10000))
 
-if [ ${#arr[@]} -ge 0 ]; then
+# echo $1
+# echo ${arr[@]}
+echo ${#arr[@]}
+
+if [ ${#arr[@]} -le 0 ]; then
 	echo ">>> connection fail, exit."
 	exit
 fi
@@ -39,7 +43,7 @@ do
 			  	echo "... processing field [" $field "]with the opposite new field as [" $field_with_prefix_zero "]"
 				if [[ "${new_fields[@]}" =~ $field_with_prefix_zero ]]; then
 					echo "... new field exits, removing the old field [" $field "]"
-					redis-cli -c hdel ${arr[$i]} $field > /dev/null
+					redis-cli -p $1 -c hdel ${arr[$i]} $field > /dev/null
 				# else
 					# echo "new field is not exits, nothing to do"
 				fi
@@ -52,7 +56,7 @@ do
 	  	echo ">>> [ scan finished ]"
 	  	break
 	else
-		arr=($(redis-cli -p 6379 -c scan ${arr[0]} match 01:*))
+		arr=($(redis-cli -p $1 -c scan ${arr[0]} match 01:* count 10000))
 	fi
 
 done
