@@ -30,8 +30,8 @@ do
 		for i in $(seq 1 `expr ${#arr[@]} - 1` )
 		do
 			echo ">>> processing key [" ${arr[$i]} "]"
-			old_fields=($(redis-cli -c hkeys ${arr[$i]} |grep ^h|grep -v ^h0|sort))
-			new_fields=($(redis-cli -c hkeys ${arr[$i]} |grep ^h|grep ^h0|sort))
+			old_fields=($(redis-cli -p $1 -c hkeys ${arr[$i]} |grep ^h|grep -v ^h0|sort))
+			new_fields=($(redis-cli -p $1 -c hkeys ${arr[$i]} |grep ^h|grep ^h0|sort))
 		  
 			echo ">>> old fields: [" ${old_fields[@]} "]"
 			echo ">>> new fields: [" ${new_fields[@]} "]"
@@ -40,7 +40,7 @@ do
 			do
 		  	
 			  	field_with_prefix_zero="h"$(echo ${field:1} |awk '{printf("%04d\n",$0)}')
-			  	echo "... processing field [" $field "]with the opposite new field as [" $field_with_prefix_zero "]"
+			  	echo "... processing field [" $field "] with the opposite new field as [" $field_with_prefix_zero "]"
 				if [[ "${new_fields[@]}" =~ $field_with_prefix_zero ]]; then
 					echo "... new field exits, removing the old field [" $field "]"
 					redis-cli -p $1 -c hdel ${arr[$i]} $field > /dev/null

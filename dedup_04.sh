@@ -40,7 +40,7 @@ do
 			do
 		  	
 			  	field_with_prefix_zero="h"$(echo ${field:1} |awk '{printf("%04d\n",$0)}')
-			  	echo "... processing field [" $field "]with the opposite new field as [" $field_with_prefix_zero "]"
+			  	echo "... processing field [" $field "] with the opposite new field as [" $field_with_prefix_zero "]"
 				if [[ "${new_fields[@]}" =~ $field_with_prefix_zero ]]; then
 					echo "... new field exits, removing the old field [" $field "]"
 					redis-cli -p $1 -c hdel ${arr[$i]} $field > /dev/null
