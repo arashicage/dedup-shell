@@ -30,8 +30,8 @@ do
 		for i in $(seq 1 `expr ${#arr[@]} - 1` )
 		do
 			echo ">>> processing key [" ${arr[$i]} "]"
-			old_fields=($(redis-cli -c hkeys ${arr[$i]} |grep ^h|grep -v ^h0|sort))
-			new_fields=($(redis-cli -c hkeys ${arr[$i]} |grep ^h|grep ^h0|sort))
+			old_fields=($(redis-cli -p $1 -c hkeys ${arr[$i]} |grep ^h|grep -v ^h0|sort))
+			new_fields=($(redis-cli -p $1 -c hkeys ${arr[$i]} |grep ^h|grep ^h0|sort))
 		  
 			echo ">>> old fields: [" ${old_fields[@]} "]"
 			echo ">>> new fields: [" ${new_fields[@]} "]"
